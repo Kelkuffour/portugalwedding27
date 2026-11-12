@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import {
   ArrowUp,
   Check,
@@ -17,7 +17,6 @@ import { CountdownAndCalendarSection } from './components/CountdownAndCalendarSe
 import { RsvpSection, GuestbookSection } from './components/RsvpAndGuestbookSections';
 import { GiftBoxSection } from './components/GiftBoxSection';
 import { VideoInvitationOpening } from './components/VideoInvitationOpening';
-import type { RsvpEntry } from '../server';
 
 const SCHEDULE_ITEMS = [
   {
@@ -47,22 +46,8 @@ export default function App() {
   const [invitationOpened, setInvitationOpened] = useState(false);
   const [transitioning, setTransitioning] = useState<boolean>(false);
   const [transitionTargetLabel, setTransitionTargetLabel] = useState<string>('');
-  const [rsvps, setRsvps] = useState<RsvpEntry[]>([]);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [navMenuOpen, setNavMenuOpen] = useState(false);
-
-  useEffect(() => {
-    fetch('/api/state')
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data) => {
-        if (data) {
-          if (Array.isArray(data.rsvps)) setRsvps(data.rsvps);
-        }
-      })
-      .catch(() => {
-        // Offline fallback
-      });
-  }, []);
 
   const handleNavigateToSection = (targetId: string, label: string) => {
     setNavMenuOpen(false);
@@ -405,10 +390,7 @@ export default function App() {
         {/* ==============================================================
             Section 08: RSVP
            ============================================================== */}
-        <RsvpSection
-          rsvps={rsvps}
-          onRsvpSubmitted={(entry) => setRsvps((prev) => [entry, ...prev])}
-        />
+        <RsvpSection />
 
         {/* ==============================================================
             Section 09: Venue and Directions

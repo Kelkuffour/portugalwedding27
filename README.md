@@ -3,6 +3,14 @@
 Install dependencies with `npm install`, then run `npm run dev` and open
 http://localhost:3000.
 
+## WhatsApp RSVP
+
+The RSVP form opens a prefilled WhatsApp message to +352 661 939 655 with the
+guest's name, contact, attendance, total party size, and optional note. Guests must
+press Send in WhatsApp to deliver it. Opening WhatsApp is not a delivery confirmation.
+This flow works on a static Vercel deployment without a database or SMS service;
+it does not save RSVPs on the server or display a response count.
+
 ## Comments and hosting
 
 Guestbook comments are stored by the Node server, not in the browser. The

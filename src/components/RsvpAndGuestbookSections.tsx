@@ -1,81 +1,29 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, Send } from 'lucide-react';
+import { Send } from 'lucide-react';
 import { motion } from 'motion/react';
 import { EmbossedFloralDivider } from './EmbossedRoseCorner';
-import type { GuestbookWish, RsvpEntry } from '../../server';
+import type { GuestbookWish } from '../../server';
+import { createRsvpWhatsAppUrl } from '../lib/rsvp';
 
-interface RsvpSectionProps {
-  rsvps: RsvpEntry[];
-  onRsvpSubmitted: (entry: RsvpEntry) => void;
-}
-
-export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted }) => {
+export const RsvpSection: React.FC = () => {
   const [name, setName] = useState('');
   const [contact, setContact] = useState('');
   const [attending, setAttending] = useState<'joyfully_accepts' | 'regretfully_declines'>('joyfully_accepts');
   const [guestsCount, setGuestsCount] = useState<number>(1);
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
-  const [submittedEntry, setSubmittedEntry] = useState<RsvpEntry | null>(null);
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
     setError(null);
-
     if (!name.trim()) {
-      setError('Please enter your full name.');
+      setError('Por favor, indique o seu nome completo.');
       return;
     }
     if (!contact.trim()) {
-      setError('Please provide your telephone number or email address.');
+      setError('Por favor, indique o seu telefone ou email.');
       return;
     }
-
-    setSubmitting(true);
-    try {
-      const res = await fetch('/api/rsvp', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: name.trim(),
-          contact: contact.trim(),
-          attending,
-          guestsCount: attending === 'joyfully_accepts' ? guestsCount : 0,
-          attireNote: 'Black tie / Casual chic',
-          message: message.trim(),
-        }),
-      });
-
-      if (!res.ok) {
-        const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || 'Could not save RSVP.');
-      }
-
-      const data = await res.json();
-      setSubmittedEntry(data.rsvp);
-      onRsvpSubmitted(data.rsvp);
-      setName('');
-      setContact('');
-      setMessage('');
-    } catch (err) {
-      const fallback: RsvpEntry = {
-        id: `local-rsvp-${Date.now()}`,
-        name: name.trim(),
-        contact: contact.trim(),
-        attending,
-        guestsCount: attending === 'joyfully_accepts' ? guestsCount : 0,
-        attireNote: 'Black tie / Casual chic',
-        message: message.trim(),
-        createdAt: new Date().toISOString(),
-      };
-      setSubmittedEntry(fallback);
-      onRsvpSubmitted(fallback);
-      if (err instanceof Error && err.message.includes('Please')) {
-        setError(err.message);
-      }
-    } finally {
-      setSubmitting(false);
-    }
+    window.location.assign(createRsvpWhatsAppUrl({ name, contact, attending, guestsCount, message }));
   };
 
   return (
@@ -100,28 +48,6 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
         <EmbossedFloralDivider className="my-5" />
       </div>
 
-      {submittedEntry ? (
-        <div className="p-6 border border-[#C8BFA8] bg-[#F7F5F0] text-center rounded-xs">
-          <CheckCircle2 className="w-8 h-8 text-[#3B2F26] mx-auto mb-2 stroke-[1.5]" />
-          <h3 className="font-script text-4xl text-[#3B2F26] mb-2">
-            Thank You, {submittedEntry.name}
-          </h3>
-          <p className="text-sm text-[#5C4B3E] leading-relaxed mb-4">
-            {submittedEntry.attending === 'joyfully_accepts'
-              ? `Your attendance (${submittedEntry.guestsCount} ${
-                  submittedEntry.guestsCount === 1 ? 'Guest' : 'Guests'
-                }) is confirmed for 24 de julho de 2027 às 14 horas.`
-              : 'Your response has been recorded. Thank you for letting us know.'}
-          </p>
-          <button
-            type="button"
-            onClick={() => setSubmittedEntry(null)}
-            className="embossed-button px-5 py-2 rounded-xs border border-[#D5CDBD] text-[11px] font-roman-caps tracking-[0.2em] text-[#3B2F26] cursor-pointer"
-          >
-            UPDATE RESPONSE
-          </button>
-        </div>
-      ) : (
         <form onSubmit={handleSubmit} className="space-y-4 max-w-md mx-auto" noValidate>
           {error && (
             <div
@@ -137,15 +63,16 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
               htmlFor="rsvp-name"
               className="block font-roman-caps text-[10px] tracking-[0.22em] text-[#3B2F26] mb-1.5"
             >
-              YOUR FULL NAME *
+              NOME COMPLETO *
             </label>
             <input
               id="rsvp-name"
+              maxLength={120}
               type="text"
               required
               value={name}
               onChange={(e) => setName(e.target.value)}
-              placeholder="Enter your name"
+              placeholder="O seu nome completo"
               className="w-full px-3.5 py-2.5 bg-[#FAF8F4] border border-[#D5CDBD] text-sm text-[#3B2F26] placeholder:text-[#9C8D7E] focus:outline-1 focus:outline-[#3B2F26]"
             />
           </div>
@@ -155,22 +82,23 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
               htmlFor="rsvp-contact"
               className="block font-roman-caps text-[10px] tracking-[0.22em] text-[#3B2F26] mb-1.5"
             >
-              PHONE NUMBER OR EMAIL *
+              TELEFONE OU EMAIL *
             </label>
             <input
               id="rsvp-contact"
+              maxLength={200}
               type="text"
               required
               value={contact}
               onChange={(e) => setContact(e.target.value)}
-              placeholder="Enter your phone or email"
+              placeholder="O seu telefone ou email"
               className="w-full px-3.5 py-2.5 bg-[#FAF8F4] border border-[#D5CDBD] text-sm text-[#3B2F26] placeholder:text-[#9C8D7E] focus:outline-1 focus:outline-[#3B2F26]"
             />
           </div>
 
           <div>
             <span className="block font-roman-caps text-[10px] tracking-[0.22em] text-[#3B2F26] mb-1.5">
-              WILL YOU ATTEND? *
+              VAI ESTAR PRESENTE? *
             </span>
             <div className="grid grid-cols-2 gap-2.5">
               <button
@@ -182,7 +110,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
                     : 'bg-[#FAF8F4] text-[#3B2F26] border-[#D5CDBD]'
                 }`}
               >
-                JOYFULLY ACCEPTS
+                SIM, COM ALEGRIA
               </button>
 
               <button
@@ -194,7 +122,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
                     : 'bg-[#FAF8F4] text-[#3B2F26] border-[#D5CDBD]'
                 }`}
               >
-                REGRETFULLY DECLINES
+                NÃO PODEREI IR
               </button>
             </div>
           </div>
@@ -205,7 +133,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
                 htmlFor="rsvp-guests"
                 className="block font-roman-caps text-[10px] tracking-[0.22em] text-[#3B2F26] mb-1.5"
               >
-                NUMBER OF ACCOMPANYING GUESTS
+                TOTAL DE PESSOAS (INCLUINDO VOCÊ)
               </label>
               <select
                 id="rsvp-guests"
@@ -215,7 +143,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
               >
                 {[1, 2, 3, 4, 5].map((num) => (
                   <option key={num} value={num}>
-                    {num} {num === 1 ? 'Guest (Just Me)' : `Guests (Party of ${num})`}
+                    {num} {num === 1 ? 'pessoa (só eu)' : 'pessoas'}
                   </option>
                 ))}
               </select>
@@ -227,33 +155,31 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
               htmlFor="rsvp-message"
               className="block font-roman-caps text-[10px] tracking-[0.22em] text-[#3B2F26] mb-1.5"
             >
-              MESSAGE OR NOTE (OPTIONAL)
+              MENSAGEM OU OBSERVAÇÃO (OPCIONAL)
             </label>
             <textarea
               id="rsvp-message"
+              maxLength={1000}
               rows={2}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Dietary notes or message..."
+              placeholder="Restrições alimentares ou mensagem..."
               className="w-full px-3.5 py-2.5 bg-[#FAF8F4] border border-[#D5CDBD] text-sm text-[#3B2F26] placeholder:text-[#9C8D7E] focus:outline-1 focus:outline-[#3B2F26]"
             />
           </div>
 
           <button
             type="submit"
-            disabled={submitting}
             className="embossed-button w-full py-3 px-6 border border-[#C8BFA8] font-roman-caps text-xs tracking-[0.24em] text-[#3B2F26] cursor-pointer disabled:opacity-60"
           >
-            {submitting ? 'SENDING RSVP...' : 'CONFIRM ATTENDANCE'}
+            ENVIAR RSVP PELO WHATSAPP
           </button>
+          <p className="text-center text-xs text-[#6E5D4F] leading-relaxed">
+            A mensagem será aberta no WhatsApp para +352 661 939 655.
+            Toque em Enviar no WhatsApp para concluir a sua resposta.
+          </p>
         </form>
-      )}
 
-      {rsvps.length > 0 && (
-        <p className="mt-5 text-center font-roman-caps text-[10px] tracking-[0.2em] text-[#6E5D4F] tabular-nums">
-          CONFIRMED RESPONSES: {rsvps.length}
-        </p>
-      )}
     </motion.section>
   );
 };
