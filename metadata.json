@@ -1,6 +1,8 @@
 {
-  "name": "Elisabeth Anderson — Interactive Digital Invitation",
-  "description": "An interactive letterpress and blind-embossed digital invitation honouring Elisabeth Anderson on July 16, 2026 at Love Gardens Villa, Miami.",
+  "name": "Agostinho e Kety — Casamento",
+  "description": "Casamento de Agostinho e Kety, 24 de julho de 2027 às 14 horas. Rua das Nogueiras 7, Foros do Almada, 2130-523 Santo Estêvão.",
   "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
 }

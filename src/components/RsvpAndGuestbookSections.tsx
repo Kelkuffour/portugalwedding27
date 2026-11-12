@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Check, CheckCircle2, Copy, Phone, Send } from 'lucide-react';
+import { CheckCircle2, Send } from 'lucide-react';
 import { motion } from 'motion/react';
 import { EmbossedFloralDivider } from './EmbossedRoseCorner';
 import type { GuestbookWish, RsvpEntry } from '../../server';
@@ -18,18 +18,6 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
   const [submittedEntry, setSubmittedEntry] = useState<RsvpEntry | null>(null);
-  const [copiedPhone, setCopiedPhone] = useState(false);
-
-  const handleCopyPhone = async () => {
-    try {
-      await navigator.clipboard.writeText('4122 222 222');
-      setCopiedPhone(true);
-      window.setTimeout(() => setCopiedPhone(false), 2000);
-    } catch {
-      // Ignore error
-    }
-  };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
@@ -53,7 +41,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
           contact: contact.trim(),
           attending,
           guestsCount: attending === 'joyfully_accepts' ? guestsCount : 0,
-          attireNote: 'White or Brown',
+          attireNote: 'Black tie / Casual chic',
           message: message.trim(),
         }),
       });
@@ -76,7 +64,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
         contact: contact.trim(),
         attending,
         guestsCount: attending === 'joyfully_accepts' ? guestsCount : 0,
-        attireNote: 'White or Brown',
+        attireNote: 'Black tie / Casual chic',
         message: message.trim(),
         createdAt: new Date().toISOString(),
       };
@@ -105,39 +93,9 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
           RSVP
         </h2>
         <p className="font-roman-caps text-xs tracking-[0.22em] text-[#3B2F26] tabular-nums mb-1">
-          BY 2 TH JULY AT 4122 222 222
-        </p>
-        <p className="font-roman-caps text-[11px] tracking-[0.22em] text-[#6E5D4F]">
-          REGISTERED AT NAME
+          CONFIRMAR PRESENÇA ATÉ O DIA 31 DE MARÇO.
         </p>
 
-        {/* Direct Phone Call & Copy Bar */}
-        <div className="mt-4 flex items-center justify-center gap-2.5">
-          <a
-            href="tel:4122222222"
-            className="embossed-button px-3.5 py-1.5 rounded-xs border border-[#D5CDBD] text-[10px] font-roman-caps tracking-[0.18em] text-[#3B2F26] inline-flex items-center gap-1.5 tabular-nums"
-          >
-            <Phone className="w-3 h-3 text-[#3B2F26]" />
-            <span>CALL 4122 222 222</span>
-          </a>
-          <button
-            type="button"
-            onClick={handleCopyPhone}
-            className="embossed-button px-3.5 py-1.5 rounded-xs border border-[#D5CDBD] text-[10px] font-roman-caps tracking-[0.18em] text-[#3B2F26] inline-flex items-center gap-1.5 cursor-pointer"
-          >
-            {copiedPhone ? (
-              <>
-                <Check className="w-3 h-3 text-[#3B2F26]" />
-                <span>COPIED</span>
-              </>
-            ) : (
-              <>
-                <Copy className="w-3 h-3 text-[#6E5D4F]" />
-                <span>COPY NUMBER</span>
-              </>
-            )}
-          </button>
-        </div>
 
         <EmbossedFloralDivider className="my-5" />
       </div>
@@ -152,7 +110,7 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
             {submittedEntry.attending === 'joyfully_accepts'
               ? `Your attendance (${submittedEntry.guestsCount} ${
                   submittedEntry.guestsCount === 1 ? 'Guest' : 'Guests'
-                }) is confirmed for July 16, 2026 at Three O’Clock in the Afternoon.`
+                }) is confirmed for 24 de julho de 2027 às 14 horas.`
               : 'Your response has been recorded. Thank you for letting us know.'}
           </p>
           <button
@@ -320,7 +278,7 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
       return;
     }
     if (!message.trim()) {
-      setError('Please write a message for Elisabeth Anderson.');
+      setError('Please write a message for Agostinho e Kety.');
       return;
     }
 
@@ -378,7 +336,7 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
           Guestbook
         </h2>
         <p className="mt-2 text-sm text-[#5C4B3E]">
-          Leave your warmest wishes for Elisabeth Anderson.
+          Leave your warmest wishes for Agostinho e Kety.
         </p>
         <EmbossedFloralDivider className="my-4" />
       </div>
@@ -444,7 +402,7 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
       <div className="max-w-md mx-auto max-h-72 overflow-y-auto space-y-3 pr-1">
         {wishes.length === 0 ? (
           <div className="p-6 border border-[#D8CFC0] bg-[#F7F5F0] text-center text-sm text-[#6E5D4F]">
-            No wishes yet. Be the first to leave a blessing for Elisabeth Anderson.
+            No wishes yet. Be the first to leave a blessing for Agostinho e Kety.
           </div>
         ) : (
           wishes.map((wish) => (

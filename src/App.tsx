@@ -19,44 +19,11 @@ import { GiftBoxSection } from './components/GiftBoxSection';
 import { VideoInvitationOpening } from './components/VideoInvitationOpening';
 import type { GuestbookWish, RsvpEntry } from '../server';
 
-const DRESS_CODE_SWATCHES = [
-  { name: 'Pure White', hex: '#FAF8F4' },
-  { name: 'Warm Ivory', hex: '#EFECE6' },
-  { name: 'Oatmeal Linen', hex: '#D8CFC1' },
-  { name: 'Warm Cocoa', hex: '#8A705A' },
-  { name: 'Espresso Brown', hex: '#3B2F26' },
-];
-
 const SCHEDULE_ITEMS = [
   {
-    time: '2:45 PM',
-    title: 'Guest Arrival',
-    description: 'Welcome refreshments in the garden courtyard at Love Gardens Villa.',
-  },
-  {
-    time: '3:00 PM',
-    title: 'Guest Seating',
-    description: 'At Three O’Clock in the Afternoon — Official commencement hour.',
-  },
-  {
-    time: '3:30 PM',
-    title: 'Bridal Shower & Honouring Ceremony',
-    description: 'Tributes, blessings, and toasts honouring Elisabeth Anderson.',
-  },
-  {
-    time: '4:30 PM',
-    title: 'Afternoon Reception',
-    description: 'Garden soirée, artisanal patisserie, and celebration in Miami.',
-  },
-  {
-    time: '5:30 PM',
-    title: 'Portraits & Gift Keepsakes',
-    description: 'Group photographs in White & Brown attire and unsealing of gifts.',
-  },
-  {
-    time: '6:30 PM',
-    title: 'Farewell',
-    description: 'Warm send-off and floral keepsakes for all honoured guests.',
+    time: '14:00',
+    title: 'Casamento',
+    description: 'Agostinho e Kety — 24 de julho de 2027.',
   },
 ];
 
@@ -120,7 +87,7 @@ export default function App() {
 
   const handleCopyAddress = async () => {
     try {
-      await navigator.clipboard.writeText('Love Gardens Villa, Pearlsville CA 1238 Miami');
+      await navigator.clipboard.writeText('Rua das Nogueiras 7, Foros do Almada, 2130-523 Santo Estêvão');
       setCopiedAddress(true);
       window.setTimeout(() => setCopiedAddress(false), 2000);
     } catch {
@@ -265,18 +232,18 @@ export default function App() {
         >
           <div className="space-y-1.5 mb-5">
             <p className="font-roman-caps text-xs tracking-[0.26em] text-[#3B2F26] letterpress-text">
-              YOU ARE INVITED TO A
+              CONVIDAMOS VOCÊ PARA O
             </p>
             <p className="font-roman-caps text-sm tracking-[0.28em] text-[#3B2F26] letterpress-text">
-              BRIDAL SHOWER
+              CASAMENTO
             </p>
             <p className="font-roman-caps text-xs tracking-[0.26em] text-[#3B2F26] letterpress-text">
-              HONOURING
+              DE
             </p>
           </div>
 
           <h1 className="font-script text-5xl sm:text-6xl text-[#3B2F26] my-5 letterpress-text">
-            Elisabeth Anderson
+            Agostinho e Kety
           </h1>
 
           {/* Framed Hero Keepsake Plate from the Uploaded Invitation */}
@@ -294,7 +261,7 @@ export default function App() {
                 viewport={{ once: true, amount: 0.2 }}
                 transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
                 src="/assets/aistudio/_I_AM_ALL_THAT_MATTERS__MY__1bf32eac.jpg"
-                alt="Elisabeth Anderson & Her Groom"
+                alt="Agostinho e Kety"
                 referrerPolicy="no-referrer"
                 style={{ objectPosition: 'center 25%' }}
                 className="w-full h-full object-cover"
@@ -303,7 +270,7 @@ export default function App() {
           </motion.div>
 
           <p className="font-serif-editorial italic text-lg sm:text-xl text-[#4D3E32] leading-relaxed max-w-md mx-auto mt-6">
-            “Join us for an unforgettable afternoon of warmth, white garden roses, and joyful celebration as we honour Elisabeth Anderson.”
+            Será uma alegria compartilhar esse momento com você.
           </p>
 
           <EmbossedFloralDivider className="mt-6 mb-2" />
@@ -327,57 +294,57 @@ export default function App() {
 
           <div className="relative z-20">
             <p className="font-roman-caps text-[11px] tracking-[0.24em] text-[#6E5D4F] mb-3">
-              TOGETHER WITH OUR FAMILIES
+              JUNTAMENTE COM AS NOSSAS FAMÍLIAS
             </p>
             <p className="font-roman-caps text-xs tracking-[0.24em] text-[#3B2F26] mb-1">
-              YOU ARE INVITED TO A
+              CONVIDAMOS VOCÊ PARA O
             </p>
             <p className="font-roman-caps text-sm tracking-[0.26em] text-[#3B2F26] mb-1">
-              BRIDAL SHOWER
+              CASAMENTO
             </p>
             <p className="font-roman-caps text-xs tracking-[0.24em] text-[#3B2F26] mb-6">
-              HONOURING
+              DE
             </p>
 
             {/* Bride & Groom / Honouree Lockup */}
             <div className="my-6">
               <h2 className="font-script text-5xl sm:text-6xl text-[#3B2F26] letterpress-text">
-                Elisabeth Anderson
+                Agostinho e Kety
               </h2>
             </div>
 
-            {/* Exact Date Lockup from Uploaded Card: JULY | 16 | 2026 */}
+            {/* Exact Date Lockup from Uploaded Card: JULHO | 24 | 2027 */}
             <div className="inline-flex items-center justify-center gap-5 sm:gap-6 my-6 py-1">
               <span className="font-roman-caps text-sm sm:text-base tracking-[0.28em] text-[#3B2F26]">
-                JULY
+                JULHO
               </span>
               <span className="h-9 w-[1px] bg-[#3B2F26]/75" aria-hidden="true" />
               <span className="font-serif-editorial text-4xl sm:text-5xl text-[#3B2F26] tabular-nums leading-none">
-                16
+                24
               </span>
               <span className="h-9 w-[1px] bg-[#3B2F26]/75" aria-hidden="true" />
               <span className="font-serif-editorial text-lg sm:text-xl tracking-[0.22em] text-[#3B2F26] tabular-nums">
-                2026
+                2027
               </span>
             </div>
 
             {/* Ceremony Time */}
             <div className="my-5 space-y-1">
               <p className="font-roman-caps text-xs tracking-[0.22em] text-[#3B2F26]">
-                AT THREE O’CLOCK IN THE
+                ÀS 14 HORAS
               </p>
               <p className="font-roman-caps text-xs tracking-[0.22em] text-[#3B2F26]">
-                AFTERNOON
+                24 DE JULHO DE 2027
               </p>
             </div>
 
             {/* Ceremony Venue */}
             <div className="mt-6 space-y-1.5">
               <p className="font-roman-caps text-sm sm:text-base tracking-[0.2em] text-[#3B2F26] font-medium">
-                LOVE GARDENS VILLA
+                RUA DAS NOGUEIRAS 7
               </p>
               <p className="font-roman-caps text-xs sm:text-sm tracking-[0.18em] text-[#3B2F26]">
-                PEARLSVILLE CA 1238 MIAMI
+                FOROS DO ALMADA · 2130-523 SANTO ESTÊVÃO
               </p>
             </div>
           </div>
@@ -400,33 +367,33 @@ export default function App() {
           className="py-12 px-6 sm:px-12 text-center border-b border-[#8A7666]/25"
         >
           <p className="font-roman-caps text-[11px] tracking-[0.26em] text-[#6E5D4F] mb-2">
-            CELEBRATION &amp; HOSPITALITY
+            O NOSSO CASAMENTO
           </p>
           <h2 className="font-script text-4xl sm:text-5xl text-[#3B2F26] mb-4 letterpress-text">
-            Afternoon Reception
+            Celebração
           </h2>
           <p className="font-serif-editorial text-base sm:text-lg text-[#4D3E32] max-w-md mx-auto leading-relaxed mb-6">
-            We warmly welcome you to celebrate with afternoon refreshments, botanical dining, and joyful toasts in the garden conservatory.
+            Será uma alegria compartilhar esse momento com você.
           </p>
 
           <div className="p-6 bg-[#F7F5F0] border border-[#D8CFC0] max-w-md mx-auto space-y-3">
             <div>
               <p className="font-roman-caps text-[10px] tracking-[0.22em] text-[#6E5D4F]">
-                DATE &amp; TIME
+                DATA E HORA
               </p>
               <p className="font-roman-caps text-xs sm:text-sm tracking-[0.2em] text-[#3B2F26] mt-0.5 tabular-nums">
-                JULY 16, 2026 · THREE O’CLOCK IN THE AFTERNOON
+                24 DE JULHO DE 2027 · 14 HORAS
               </p>
             </div>
             <div className="pt-3 border-t border-[#8A7666]/25">
               <p className="font-roman-caps text-[10px] tracking-[0.22em] text-[#6E5D4F]">
-                RECEPTION VENUE
+                LOCAL
               </p>
               <p className="font-roman-caps text-xs sm:text-sm tracking-[0.2em] text-[#3B2F26] mt-0.5">
-                LOVE GARDENS VILLA
+                RUA DAS NOGUEIRAS 7
               </p>
               <p className="font-roman-caps text-[11px] tracking-[0.18em] text-[#5C4B3E] mt-0.5">
-                PEARLSVILLE CA 1238 MIAMI
+                FOROS DO ALMADA · 2130-523 SANTO ESTÊVÃO
               </p>
             </div>
           </div>
@@ -457,27 +424,27 @@ export default function App() {
           className="py-12 px-6 sm:px-12 text-center border-b border-[#8A7666]/25"
         >
           <p className="font-roman-caps text-[11px] tracking-[0.26em] text-[#6E5D4F] mb-2">
-            LOCATION &amp; MAP
+            LOCALIZAÇÃO
           </p>
           <h2 className="font-script text-4xl sm:text-5xl text-[#3B2F26] mb-3 letterpress-text">
-            Venue &amp; Directions
+            Localização
           </h2>
 
           <div className="mb-5">
             <p className="font-roman-caps text-sm sm:text-base tracking-[0.2em] text-[#3B2F26] font-medium flex items-center justify-center gap-1.5">
               <MapPin className="w-4 h-4 text-[#3B2F26]" />
-              <span>LOVE GARDENS VILLA</span>
+              <span>RUA DAS NOGUEIRAS 7</span>
             </p>
             <p className="font-roman-caps text-xs tracking-[0.18em] text-[#5C4B3E] mt-1">
-              PEARLSVILLE CA 1238 MIAMI
+              FOROS DO ALMADA · 2130-523 SANTO ESTÊVÃO
             </p>
           </div>
 
           {/* Embedded Google Map Preview */}
           <div className="overflow-hidden border border-[#D8CFC0] bg-[#E5DFD3] h-64 sm:h-72 mb-5">
             <iframe
-              title="Love Gardens Villa, Pearlsville CA 1238 Miami"
-              src="https://www.google.com/maps?q=Love+Gardens+Villa+Miami+FL&output=embed"
+              title="Rua das Nogueiras 7, Foros do Almada, 2130-523 Santo Estêvão"
+              src="https://www.google.com/maps?q=Rua+das+Nogueiras+7+Foros+do+Almada+2130-523+Santo+Estevao&output=embed"
               className="w-full h-full border-0 filter sepia-[0.18] contrast-[0.96]"
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
@@ -486,13 +453,13 @@ export default function App() {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
-              href="https://www.google.com/maps/search/?api=1&query=Love+Gardens+Villa+Pearlsville+CA+1238+Miami"
+              href="https://www.google.com/maps/search/?api=1&query=Rua+das+Nogueiras+7+Foros+do+Almada+2130-523+Santo+Estevao"
               target="_blank"
               rel="noopener noreferrer"
               className="embossed-button w-full sm:w-auto px-6 py-3 rounded-xs border border-[#C8BFA8] font-roman-caps text-xs tracking-[0.2em] text-[#3B2F26] inline-flex items-center justify-center gap-2"
             >
               <Navigation className="w-3.5 h-3.5 text-[#3B2F26]" />
-              <span>GET DIRECTIONS</span>
+              <span>COMO CHEGAR</span>
             </a>
 
             <button
@@ -503,12 +470,12 @@ export default function App() {
               {copiedAddress ? (
                 <>
                   <Check className="w-3.5 h-3.5 text-[#3B2F26]" />
-                  <span>ADDRESS COPIED</span>
+                  <span>MORADA COPIADA</span>
                 </>
               ) : (
                 <>
                   <Copy className="w-3.5 h-3.5 text-[#6E5D4F]" />
-                  <span>COPY ADDRESS</span>
+                  <span>COPIAR MORADA</span>
                 </>
               )}
             </button>
@@ -527,7 +494,7 @@ export default function App() {
           className="py-12 px-6 sm:px-12 text-center border-b border-[#8A7666]/25"
         >
           <p className="font-roman-caps text-[11px] tracking-[0.26em] text-[#6E5D4F] mb-2">
-            ATTIRE PALETTE
+            CÓDIGO DE VESTUÁRIO
           </p>
           <h2 className="font-script text-4xl sm:text-5xl text-[#3B2F26] mb-4 letterpress-text">
             Dress Code
@@ -535,31 +502,15 @@ export default function App() {
 
           <div className="space-y-1 mb-6">
             <p className="font-roman-caps text-xs sm:text-sm tracking-[0.22em] text-[#3B2F26]">
-              DRESSCODE: PLEASE WEAR
+              DRESS CODE
             </p>
             <p className="font-roman-caps text-xs sm:text-sm tracking-[0.22em] text-[#3B2F26]">
-              SOMETHING WHITE OR BROWN
+              BLACK TIE / CASUAL CHIC
             </p>
-          </div>
-
-          {/* ChungDoi Circular Swatch Palette */}
-          <div className="flex items-center justify-center gap-3 sm:gap-4 my-6">
-            {DRESS_CODE_SWATCHES.map((swatch) => (
-              <div key={swatch.name} className="flex flex-col items-center">
-                <div
-                  className="w-11 h-11 sm:w-12 sm:h-12 rounded-full border border-[#3B2F26]/30 shadow-xs"
-                  style={{ backgroundColor: swatch.hex }}
-                  title={swatch.name}
-                />
-                <span className="mt-2 font-roman-caps text-[9px] tracking-[0.14em] text-[#6E5D4F]">
-                  {swatch.name.split(' ')[1]}
-                </span>
-              </div>
-            ))}
           </div>
 
           <p className="font-serif-editorial text-base text-[#5C4B3E] max-w-sm mx-auto leading-relaxed">
-            We kindly invite our guests to coordinate in soft whites, warm ivory, linen oatmeal, or rich espresso brown tones.
+            Black tie / Casual chic
           </p>
         </motion.section>
 
@@ -576,10 +527,10 @@ export default function App() {
         >
           <div className="text-center mb-8">
             <p className="font-roman-caps text-[11px] tracking-[0.26em] text-[#6E5D4F] mb-2">
-              PROGRAM OF EVENTS
+              PROGRAMA
             </p>
             <h2 className="font-script text-4xl sm:text-5xl text-[#3B2F26] letterpress-text">
-              Order of the Day
+              O grande dia
             </h2>
             <EmbossedFloralDivider className="my-4" />
           </div>
@@ -652,31 +603,33 @@ export default function App() {
 
           <div className="relative z-20">
             <p className="font-roman-caps text-xs tracking-[0.26em] text-[#6E5D4F] mb-3">
-              THANK YOU FOR CELEBRATING WITH US
+              Que seja o início de uma linda história.
             </p>
 
             <h2 className="font-script text-5xl sm:text-6xl text-[#3B2F26] my-5 letterpress-text">
-              Elisabeth Anderson
+              Agostinho e Kety
             </h2>
 
             <div className="inline-flex items-center justify-center gap-4 my-3">
-              <span className="font-roman-caps text-xs tracking-[0.26em] text-[#3B2F26]">JULY</span>
+              <span className="font-roman-caps text-xs tracking-[0.26em] text-[#3B2F26]">JULHO</span>
               <span className="h-6 w-[1px] bg-[#3B2F26]/70" aria-hidden="true" />
-              <span className="font-serif-editorial text-3xl text-[#3B2F26] tabular-nums">16</span>
+              <span className="font-serif-editorial text-3xl text-[#3B2F26] tabular-nums">
+                24
+              </span>
               <span className="h-6 w-[1px] bg-[#3B2F26]/70" aria-hidden="true" />
               <span className="font-serif-editorial text-base tracking-[0.2em] text-[#3B2F26] tabular-nums">
-                2026
+                2027
               </span>
             </div>
 
             <p className="font-roman-caps text-[10px] tracking-[0.22em] text-[#5C4B3E] mt-2">
-              LOVE GARDENS VILLA · PEARLSVILLE CA 1238 MIAMI
+              RUA DAS NOGUEIRAS 7, FOROS DO ALMADA, 2130-523 SANTO ESTÊVÃO
             </p>
 
             <EmbossedFloralDivider className="my-6" />
 
             <p className="font-roman-caps text-[10px] tracking-[0.2em] text-[#6E5D4F] tabular-nums">
-              RSVP BY 2 TH JULY AT 4122 222 222 · REGISTERED AT NAME
+              CONFIRMAR PRESENÇA ATÉ O DIA 31 DE MARÇO.
             </p>
           </div>
         </motion.footer>

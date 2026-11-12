@@ -27,13 +27,13 @@ export const GiftBoxSection: React.FC = () => {
       className="py-12 px-6 sm:px-12 text-center border-b border-[#8A7666]/25"
     >
       <p className="font-roman-caps text-[11px] tracking-[0.26em] text-[#6E5D4F] mb-2">
-        WEDDING &amp; BRIDAL SHOWER REGISTRY
+        LISTA DE PRESENTES
       </p>
       <h2 className="font-script text-4xl sm:text-5xl text-[#3B2F26] mb-3 letterpress-text">
         Gift Box
       </h2>
       <p className="text-sm text-[#5C4B3E] max-w-sm mx-auto leading-relaxed mb-6">
-        Your presence at Love Gardens Villa is the greatest gift. Tap the gift box below to view the registry details from the invitation.
+        A sua presença é o nosso maior presente. Tap the gift box below to view the registry details from the invitation.
       </p>
 
       {/* ChungDoi Interactive Animated Gift Box Trigger */}
@@ -106,10 +106,10 @@ export const GiftBoxSection: React.FC = () => {
 
               <div className="relative z-20">
                 <p className="font-roman-caps text-[10px] tracking-[0.24em] text-[#6E5D4F] mb-1">
-                  BRIDAL SHOWER REGISTRY
+                  LISTA DE PRESENTES
                 </p>
                 <h3 className="font-script text-4xl text-[#3B2F26] mb-3">
-                  Elisabeth Anderson
+                  Agostinho e Kety
                 </h3>
 
                 <EmbossedFloralDivider className="my-4" />
@@ -143,37 +143,11 @@ export const GiftBoxSection: React.FC = () => {
                     </button>
                   </div>
 
-                  <div className="flex items-center justify-between gap-3">
-                    <div>
-                      <p className="font-roman-caps text-[9px] tracking-[0.2em] text-[#6E5D4F]">
-                        RSVP &amp; REGISTRY CONTACT
-                      </p>
-                      <p className="font-roman-caps text-sm tracking-[0.18em] text-[#3B2F26] tabular-nums mt-0.5">
-                        4122 222 222
-                      </p>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => handleCopy('4122 222 222', 'phone')}
-                      className="embossed-button px-3 py-1.5 rounded-xs border border-[#D5CDBD] text-[10px] font-roman-caps tracking-[0.16em] text-[#3B2F26] inline-flex items-center gap-1.5 cursor-pointer shrink-0"
-                    >
-                      {copiedField === 'phone' ? (
-                        <>
-                          <Check className="w-3 h-3" />
-                          <span>COPIED</span>
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="w-3 h-3" />
-                          <span>COPY</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
+
                 </div>
 
                 <p className="font-serif-editorial italic text-base text-[#5C4B3E] mb-5">
-                  “Thank you for your love, generosity, and warm wishes as we celebrate Elisabeth Anderson.”
+                  “Thank you for your love, generosity, and warm wishes as we celebrate Agostinho e Kety.”
                 </p>
 
                 <button

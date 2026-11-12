@@ -59,7 +59,7 @@ export const OpeningInvitationModal: React.FC<OpeningInvitationModalProps> = ({
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-10 w-full max-w-[440px] sm:max-w-[470px] bg-white rounded-2xl shadow-2xl overflow-hidden text-center border border-white/40"
           >
-            {/* Delicate Watercolor Villa / Garden Courtyard Background Art matching the Love Gardens Villa & ChungDoi aesthetic */}
+            {/* Delicate Watercolor Villa / Garden Courtyard Background Art matching the Santo Estêvão & ChungDoi aesthetic */}
             <div
               className="absolute inset-0 pointer-events-none opacity-45 mix-blend-multiply bg-bottom bg-no-repeat bg-contain"
               style={{
@@ -77,7 +77,7 @@ export const OpeningInvitationModal: React.FC<OpeningInvitationModalProps> = ({
               {/* Names in Roman Serif Capitals with Forest Green Styling */}
               <div className="mb-4">
                 <h1 className="font-serif-editorial text-3xl sm:text-4xl text-[#344E29] tracking-wider uppercase font-normal leading-tight">
-                  Elisabeth
+                  Kety
                 </h1>
                 <div className="font-script text-2xl sm:text-3xl text-[#5C7E4F] my-0.5 lowercase italic">
                   &amp;
@@ -96,7 +96,7 @@ export const OpeningInvitationModal: React.FC<OpeningInvitationModalProps> = ({
 
               {/* Date Wording */}
               <p className="font-serif-editorial text-base sm:text-lg text-[#3E3832] font-normal mt-3 mb-1">
-                July 16, 2026
+                24 de julho de 2027
               </p>
 
               {/* Cordially Invites */}
@@ -104,9 +104,9 @@ export const OpeningInvitationModal: React.FC<OpeningInvitationModalProps> = ({
                 Cordially Invites
               </p>
 
-              {/* Pill Badge Container: Bridal Shower (or Event Title) */}
+              {/* Pill Badge Container: Casamento (or Event Title) */}
               <div className="my-2 px-5 py-1.5 rounded-lg border border-[#A7BFA0] bg-[#EAF2E7]/80 text-[#2F4A25] font-serif-editorial text-sm sm:text-base tracking-wide shadow-xs">
-                Bridal Shower
+                Casamento
               </div>
 
               {/* To celebrate with our family */}

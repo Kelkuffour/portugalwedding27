@@ -3,17 +3,17 @@ import { Calendar, Download } from 'lucide-react';
 import { motion } from 'motion/react';
 import { EmbossedFloralDivider } from './EmbossedRoseCorner';
 
-// July 16, 2026 at 3:00 PM in Miami (EDT, UTC-4)
-const TARGET_ISO_MIAMI = '2026-07-16T15:00:00-04:00';
-const TARGET_TIMESTAMP = new Date(TARGET_ISO_MIAMI).getTime();
+// July 24, 2027 at 14:00 in Portugal (summer time, UTC+1).
+const TARGET_ISO_PORTUGAL = '2027-07-24T14:00:00+01:00';
+const TARGET_TIMESTAMP = new Date(TARGET_ISO_PORTUGAL).getTime();
 
-// July 2026 starts on Wednesday (index 3 in Sun-Sat) and has 31 days
-const JULY_2026_DAYS = [
-  null, null, null, 1, 2, 3, 4,
-  5, 6, 7, 8, 9, 10, 11,
-  12, 13, 14, 15, 16, 17, 18,
-  19, 20, 21, 22, 23, 24, 25,
-  26, 27, 28, 29, 30, 31, null,
+// July 2027 starts on Thursday (Sunday-first grid).
+const JULY_2027_DAYS = [
+  null, null, null, null, 1, 2, 3,
+  4, 5, 6, 7, 8, 9, 10,
+  11, 12, 13, 14, 15, 16, 17,
+  18, 19, 20, 21, 22, 23, 24,
+  25, 26, 27, 28, 29, 30, 31,
 ];
 
 export const CountdownAndCalendarSection: React.FC = () => {
@@ -36,11 +36,11 @@ export const CountdownAndCalendarSection: React.FC = () => {
   const seconds = absSeconds % 60;
 
   const googleCalendarUrl = (() => {
-    const title = encodeURIComponent('Bridal Shower Honouring Elisabeth Anderson');
-    const dates = '20260716T190000Z/20260716T230000Z';
-    const location = encodeURIComponent('Love Gardens Villa, Pearlsville CA 1238 Miami');
+    const title = encodeURIComponent('Casamento de Agostinho e Kety');
+    const dates = '20270724T130000Z/20270724T130000Z';
+    const location = encodeURIComponent('Rua das Nogueiras 7, Foros do Almada, 2130-523 Santo Estêvão');
     const details = encodeURIComponent(
-      'You are invited to a Bridal Shower honouring Elisabeth Anderson on July 16, 2026 at Three O’Clock in the Afternoon.\n\nVenue: Love Gardens Villa, Pearlsville CA 1238 Miami\nDresscode: Please wear something white or brown.\nRSVP by 2th July at 4122 222 222.\nRegistered at Name.'
+      'Casamento de Agostinho e Kety — 24 de julho de 2027 às 14 horas.\n\nMorada: Rua das Nogueiras 7, Foros do Almada, 2130-523 Santo Estêvão\nDress code: Black tie / Casual chic.\nConfirmar presença até o dia 31 de março.\n'
     );
     return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${dates}&location=${location}&details=${details}`;
   })();
@@ -49,17 +49,16 @@ export const CountdownAndCalendarSection: React.FC = () => {
     const icsContent = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//Elisabeth Anderson Invitation//EN',
+      'PRODID:-//Agostinho e Kety Invitation//EN',
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH',
       'BEGIN:VEVENT',
-      'UID:elisabeth-anderson-20260716@lovegardensvilla.miami',
-      'DTSTAMP:20260701T120000Z',
-      'DTSTART:20260716T190000Z',
-      'DTEND:20260716T230000Z',
-      'SUMMARY:Bridal Shower Honouring Elisabeth Anderson',
-      'LOCATION:Love Gardens Villa\\, Pearlsville CA 1238 Miami',
-      'DESCRIPTION:You are invited to a Bridal Shower honouring Elisabeth Anderson. Dresscode: Please wear something white or brown. RSVP by 2th July at 4122 222 222.',
+      'UID:agostinho-kety-20270724@wedding.local',
+      `DTSTAMP:${new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '')}`,
+      'DTSTART:20270724T130000Z',
+      'SUMMARY:Casamento de Agostinho e Kety',
+      'LOCATION:Rua das Nogueiras 7\\, Foros do Almada\\, 2130-523 Santo Estêvão',
+      'DESCRIPTION:Casamento de Agostinho e Kety. Dress code: Black tie / Casual chic. Confirmar presença até o dia 31 de março.',
       'END:VEVENT',
       'END:VCALENDAR',
     ].join('\r\n');
@@ -68,7 +67,7 @@ export const CountdownAndCalendarSection: React.FC = () => {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.setAttribute('download', 'elisabeth-anderson-july-16-2026.ics');
+    link.setAttribute('download', 'agostinho-kety-24-julho-2027.ics');
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -87,10 +86,10 @@ export const CountdownAndCalendarSection: React.FC = () => {
         className="py-12 px-6 sm:px-12 text-center border-b border-[#8A7666]/25"
       >
         <p className="font-roman-caps text-[11px] tracking-[0.26em] text-[#6E5D4F] mb-2">
-          COUNTING THE MOMENTS
+          CONTANDO OS MOMENTOS
         </p>
         <h2 className="font-script text-4xl sm:text-5xl text-[#3B2F26] mb-6 letterpress-text">
-          Save The Date
+          Reserve a data
         </h2>
 
         {/* 4-Column Countdown Box */}
@@ -103,7 +102,7 @@ export const CountdownAndCalendarSection: React.FC = () => {
               {String(days).padStart(2, '0')}
             </div>
             <div className="mt-2 font-roman-caps text-[9px] sm:text-[10px] tracking-[0.22em] text-[#6E5D4F]">
-              DAYS
+              DIAS
             </div>
           </div>
 
@@ -112,7 +111,7 @@ export const CountdownAndCalendarSection: React.FC = () => {
               {String(hours).padStart(2, '0')}
             </div>
             <div className="mt-2 font-roman-caps text-[9px] sm:text-[10px] tracking-[0.22em] text-[#6E5D4F]">
-              HOURS
+              HORAS
             </div>
           </div>
 
@@ -121,7 +120,7 @@ export const CountdownAndCalendarSection: React.FC = () => {
               {String(minutes).padStart(2, '0')}
             </div>
             <div className="mt-2 font-roman-caps text-[9px] sm:text-[10px] tracking-[0.22em] text-[#6E5D4F]">
-              MINUTES
+              MINUTOS
             </div>
           </div>
 
@@ -130,15 +129,15 @@ export const CountdownAndCalendarSection: React.FC = () => {
               {String(seconds).padStart(2, '0')}
             </div>
             <div className="mt-2 font-roman-caps text-[9px] sm:text-[10px] tracking-[0.22em] text-[#6E5D4F]">
-              SECONDS
+              SEGUNDOS
             </div>
           </div>
         </div>
 
         <p className="mt-3 font-roman-caps text-[10px] tracking-[0.2em] text-[#6E5D4F]">
           {hasPassed
-            ? 'CELEBRATED ON JULY 16, 2026 AT THREE O’CLOCK IN THE AFTERNOON'
-            : 'UNTIL JULY 16, 2026 · THREE O’CLOCK IN THE AFTERNOON'}
+            ? 'CELEBRADO EM 24 DE JULHO DE 2027 ÀS 14 HORAS'
+            : 'UNTIL 24 DE JULHO DE 2027 · 14 HORAS'}
         </p>
       </motion.section>
 
@@ -151,25 +150,25 @@ export const CountdownAndCalendarSection: React.FC = () => {
         transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
         className="py-12 px-6 sm:px-12 text-center border-b border-[#8A7666]/25"
       >
-        {/* ChungDoi-Style Monthly Calendar Sheet for July 2026 */}
+        {/* ChungDoi-Style Monthly Calendar Sheet for July 2027 */}
         <div className="max-w-xs mx-auto p-5 bg-[#F7F5F0] border border-[#D8CFC0] mb-7">
           <div className="font-roman-caps text-sm tracking-[0.28em] text-[#3B2F26] pb-3 mb-3 border-b border-[#8A7666]/30">
-            JULY · 2026
+            JULHO · 2027
           </div>
 
           <div className="grid grid-cols-7 gap-1 text-[10px] font-roman-caps tracking-[0.12em] text-[#6E5D4F] mb-2">
-            <span>SU</span>
-            <span>MO</span>
-            <span>TU</span>
-            <span>WE</span>
-            <span>TH</span>
-            <span>FR</span>
-            <span>SA</span>
+            <span>DOM</span>
+            <span>SEG</span>
+            <span>TER</span>
+            <span>QUA</span>
+            <span>QUI</span>
+            <span>SEX</span>
+            <span>SÁB</span>
           </div>
 
           <div className="grid grid-cols-7 gap-y-2 text-sm font-serif-editorial tabular-nums text-[#3B2F26]">
-            {JULY_2026_DAYS.map((day, idx) => {
-              const isWeddingDay = day === 16;
+            {JULY_2027_DAYS.map((day, idx) => {
+              const isWeddingDay = day === 24;
               return (
                 <div
                   key={idx}
@@ -213,7 +212,7 @@ export const CountdownAndCalendarSection: React.FC = () => {
             className="embossed-button w-full sm:w-auto px-5 py-3 rounded-xs border border-[#C8BFA8] font-roman-caps text-[11px] tracking-[0.2em] text-[#3B2F26] inline-flex items-center justify-center gap-2 whitespace-nowrap"
           >
             <Calendar className="w-3.5 h-3.5 text-[#3B2F26]" />
-            <span>ADD TO GOOGLE CALENDAR</span>
+            <span>ADICIONAR AO GOOGLE CALENDAR</span>
           </a>
 
           <button
@@ -222,7 +221,7 @@ export const CountdownAndCalendarSection: React.FC = () => {
             className="embossed-button w-full sm:w-auto px-5 py-3 rounded-xs border border-[#C8BFA8] font-roman-caps text-[11px] tracking-[0.2em] text-[#3B2F26] inline-flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
           >
             <Download className="w-3.5 h-3.5 text-[#3B2F26]" />
-            <span>DOWNLOAD CALENDAR (.ICS)</span>
+            <span>BAIXAR CALENDÁRIO (.ICS)</span>
           </button>
         </div>
       </motion.section>

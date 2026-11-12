@@ -48,31 +48,16 @@ interface StoreData {
 
 const DEFAULT_STORE: StoreData = {
   rsvps: [],
-  wishes: [
-    {
-      id: 'wish-initial-1',
-      name: 'Clara & Thomas Vance',
-      relationship: 'Family Friends',
-      message: 'Dearest Elisabeth, wishing you the most radiant afternoon at Love Gardens Villa and a lifetime filled with grace, warmth, and enduring love.',
-      createdAt: '2026-06-18T14:30:00.000Z',
-    },
-    {
-      id: 'wish-initial-2',
-      name: 'Sophie Laurent',
-      relationship: 'Bridesmaid',
-      message: 'Counting down the days until July 16th! Already have my ivory linen dress ready for the afternoon in Miami. Cannot wait to celebrate you!',
-      createdAt: '2026-06-21T19:15:00.000Z',
-    },
-  ],
+  wishes: [],
   placeholders: {
-    groomFullName: '[Groom’s Full Name — Click to Edit]',
+    groomFullName: 'Agostinho',
     familyHostsWording: 'Together with their loving families and dear friends',
-    receptionSubtitle: 'Afternoon Garden Soirée & Bridal Shower Reception',
-    receptionTime: 'Following the Three O’Clock Gathering',
-    receptionVenue: 'Love Gardens Villa — Garden Conservatory, Pearlsville CA 1238 Miami',
+    receptionSubtitle: 'Casamento de Agostinho e Kety',
+    receptionTime: '24 de julho de 2027 às 14 horas',
+    receptionVenue: 'Rua das Nogueiras 7, Foros do Almada, 2130-523 Santo Estêvão',
     registryDetails: 'REGISTERED AT NAME',
     registryUrl: '',
-    giftNote: 'Your presence at Love Gardens Villa is the greatest gift of all. As noted on the invitation, the celebration is registered at:',
+    giftNote: 'Your presence at Santo Estêvão is the greatest gift of all. As noted on the invitation, the celebration is registered at:',
   },
 };
 
@@ -137,7 +122,7 @@ async function startServer() {
       contact: contact.trim(),
       attending: attending === 'regretfully_declines' ? 'regretfully_declines' : 'joyfully_accepts',
       guestsCount: attending === 'regretfully_declines' ? 0 : Math.max(1, Math.min(10, Number(guestsCount) || 1)),
-      attireNote: typeof attireNote === 'string' ? attireNote.trim() : 'White or Brown',
+      attireNote: typeof attireNote === 'string' ? attireNote.trim() : 'Black tie / Casual chic',
       message: typeof message === 'string' ? message.trim() : '',
       createdAt: new Date().toISOString(),
     };

@@ -15,8 +15,8 @@ export interface GalleryItem {
 const GALLERY_PLATES: GalleryItem[] = [
   {
     id: 'plate-01',
-    title: 'Elisabeth & Beloved',
-    caption: 'Elisabeth Anderson & Her Groom — Celebrating love and devotion.',
+    title: 'Agostinho e Kety',
+    caption: 'Agostinho e Kety — Celebrating love and devotion.',
     src: '/assets/aistudio/These_Are_the_Wedding_Trends_to_Follow_and_Avoid_8b245327.jpg',
     objectPosition: 'center 20%',
     scale: 'scale-100',
@@ -24,7 +24,7 @@ const GALLERY_PLATES: GalleryItem[] = [
   {
     id: 'plate-02',
     title: 'A Radiant Embrace',
-    caption: 'Elisabeth & Her Beloved — Golden hour embrace in white wedding elegance.',
+    caption: 'Agostinho e Kety — Golden hour embrace in white wedding elegance.',
     src: '/assets/aistudio/607000856072846393_bede6525.jpg',
     objectPosition: 'center 22%',
     scale: 'scale-100',
@@ -32,7 +32,7 @@ const GALLERY_PLATES: GalleryItem[] = [
   {
     id: 'plate-03',
     title: 'The Bride & Garden Elegance',
-    caption: 'Elisabeth Anderson — Bridal portrait with white roses in the garden estate.',
+    caption: 'Agostinho e Kety — Bridal portrait with white roses in the garden estate.',
     src: '/assets/aistudio/557883472618731566_4477061d.jpg',
     objectPosition: 'center 25%',
     scale: 'scale-100',
