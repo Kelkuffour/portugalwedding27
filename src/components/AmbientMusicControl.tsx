@@ -1,5 +1,5 @@
 import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Music, Volume2, VolumeX } from 'lucide-react';
+import { Volume2, VolumeX } from 'lucide-react';
 
 export interface AmbientMusicHandle {
   prepare: () => void;
@@ -87,10 +87,6 @@ export const AmbientMusicControl = forwardRef<AmbientMusicHandle>(function Ambie
       >
         {isPlaying ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 text-[#7D6B5D]" />}
       </button>
-      <span className="cotton-cardstock px-3 py-1.5 rounded-full border border-[#C8BFA8] shadow-sm flex items-center gap-1.5 text-[11px] font-roman-caps tracking-[0.14em] text-[#3B2F26]">
-        <Music className="w-3 h-3 text-[#6E5D4F]" />
-        John Legend
-      </span>
       {error && <p role="status" className="absolute bottom-14 left-0 w-56 rounded bg-[#FAF8F4] p-3 text-xs text-[#3B2F26] shadow-lg">{error}</p>}
     </div>
   );
