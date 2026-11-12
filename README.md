@@ -10,6 +10,13 @@ guestbook starts empty and automatically removes the two original demo entries
 without deleting real guest messages. Failed submissions keep the form text and
 display an error instead of adding an unsaved comment.
 
+Visitors can delete their own new comments using “Delete my comment” and confirming.
+Ownership is remembered in an HTTP-only cookie for one year and checked by the
+server. Deletion works in the browser used to post the comment; clearing cookies
+or switching devices loses that access. Older comments posted before ownership
+tracking cannot be claimed by entering the same name. Ownership credentials are
+never returned in public comment data.
+
 For production, run `npm run build`, set `NODE_ENV=production`, and run `npm start`.
 Use Node 22.18 or newer. The server uses `PORT` (default: 3000).
 Set `INVITATION_DATA_DIR` to a directory on a persistent disk on your host; it
@@ -31,3 +38,5 @@ node --test tests/guestbook.test.mjs
 The integration test uses an isolated temporary data directory. It verifies sample
 removal, preservation of real messages and RSVP data, validation, persistence after
 a server restart, and failure reporting when storage is unavailable.
+It also verifies that only the comment's browser owner can delete it, that ownership
+survives restarts, and that failed deletions preserve the comment.

@@ -47,7 +47,7 @@ test('guestbook removes samples, validates, persists and reports storage failure
   try {
     await start();
     const initial = await (await fetch(`${base}/api/guestbook`)).json();
-    assert.deepEqual(initial.wishes, [realComment]);
+    assert.deepEqual(initial.wishes, [{ ...realComment, canDelete: false }]);
     assert.equal(initial.rsvps, undefined, 'public comments must not expose RSVP data');
     assert.equal(JSON.parse(await readFile(file, 'utf8')).rsvps[0].id, 'keep-rsvp');
     assert.equal((await post({ name: ' ', message: 'Hello' })).status, 400);
@@ -55,19 +55,46 @@ test('guestbook removes samples, validates, persists and reports storage failure
     const response = await post({ name: '  João  ', message: '  Felicidades!  ' });
     assert.equal(response.status, 201);
     const saved = await response.json();
+    const cookie = response.headers.get('set-cookie').split(';')[0];
+    assert.match(response.headers.get('set-cookie'), /HttpOnly/i);
+    assert.match(response.headers.get('set-cookie'), /SameSite=Strict/i);
     assert.equal(saved.wish.name, 'João');
     assert.equal(saved.wish.message, 'Felicidades!');
     assert.equal(saved.wishes.length, 2);
+    assert.equal(saved.wish.canDelete, true);
+    assert.equal(saved.wish.ownerHash, undefined);
+    assert.equal((await fetch(`${base}/api/guestbook/${saved.wish.id}`, { method: 'DELETE' })).status, 403);
+    assert.equal((await fetch(`${base}/api/guestbook/${saved.wish.id}`, {
+      method: 'DELETE', headers: { Cookie: `guestbook_owner=${'a'.repeat(64)}` },
+    })).status, 403);
+    assert.equal((await fetch(`${base}/api/guestbook/real-guest`, { method: 'DELETE', headers: { Cookie: cookie } })).status, 403);
     await stop();
     await start();
     const reloaded = await (await fetch(`${base}/api/guestbook`)).json();
     assert.equal(reloaded.wishes[0].id, saved.wish.id, 'comment survives server restart');
+    assert.equal(reloaded.wishes[0].canDelete, false);
+    assert.equal(reloaded.wishes[0].ownerHash, undefined);
+    const owned = await (await fetch(`${base}/api/guestbook`, { headers: { Cookie: cookie } })).json();
+    assert.equal(owned.wishes[0].canDelete, true, 'ownership survives reload and restart');
+    const state = await (await fetch(`${base}/api/state`)).json();
+    assert.equal(state.wishes[0].ownerHash, undefined, 'legacy state route must not leak ownership hashes');
     // Force a write failure without changing the saved comments.
     await mkdir(`${file}.tmp`);
     const failed = await post({ name: 'Guest', message: 'Must not appear as saved' });
     assert.equal(failed.status, 500);
     assert.ok((await failed.json()).error);
     assert.equal(JSON.parse(await readFile(file, 'utf8')).wishes.length, 2);
+    const failedDelete = await fetch(`${base}/api/guestbook/${saved.wish.id}`, { method: 'DELETE', headers: { Cookie: cookie } });
+    assert.equal(failedDelete.status, 500);
+    assert.equal(JSON.parse(await readFile(file, 'utf8')).wishes.length, 2);
+    await rm(`${file}.tmp`, { recursive: true });
+    const deleted = await fetch(`${base}/api/guestbook/${saved.wish.id}`, { method: 'DELETE', headers: { Cookie: cookie } });
+    assert.equal(deleted.status, 200);
+    assert.equal((await deleted.json()).wishes.length, 1);
+    assert.equal((await fetch(`${base}/api/guestbook/${saved.wish.id}`, { method: 'DELETE', headers: { Cookie: cookie } })).status, 404);
+    await stop();
+    await start();
+    assert.deepEqual((await (await fetch(`${base}/api/guestbook`)).json()).wishes, [{ ...realComment, canDelete: false }]);
   } finally {
     await stop();
     await rm(directory, { recursive: true, force: true });

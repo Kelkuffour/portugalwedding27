@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer as createViteServer } from 'vite';
+import { createHash, randomBytes } from 'node:crypto';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -27,6 +28,27 @@ export interface GuestbookWish {
   relationship: string;
   message: string;
   createdAt: string;
+  canDelete?: boolean;
+}
+
+interface StoredGuestbookWish extends GuestbookWish {
+  ownerHash?: string;
+}
+
+function commentOwner(req: express.Request): string | undefined {
+  const token = req.headers.cookie?.split(';').map((value) => value.trim())
+    .find((value) => value.startsWith('guestbook_owner='))?.slice('guestbook_owner='.length);
+  return token && /^[a-f0-9]{64}$/.test(token) ? token : undefined;
+}
+
+const ownerHash = (token: string) => createHash('sha256').update(token).digest('hex');
+
+function publicWishes(req: express.Request, wishes: StoredGuestbookWish[], token = commentOwner(req)): GuestbookWish[] {
+  const hash = token ? ownerHash(token) : undefined;
+  return wishes.map(({ id, name, relationship, message, createdAt, ownerHash: storedHash }) => ({
+    id, name, relationship, message, createdAt,
+    canDelete: Boolean(hash && storedHash && hash === storedHash),
+  }));
 }
 
 export interface EditablePlaceholders {
@@ -42,7 +64,7 @@ export interface EditablePlaceholders {
 
 interface StoreData {
   rsvps: RsvpEntry[];
-  wishes: GuestbookWish[];
+  wishes: StoredGuestbookWish[];
   placeholders: EditablePlaceholders;
 }
 
@@ -99,7 +121,7 @@ async function startServer() {
 
   app.get('/api/state', (_req, res) => {
     const store = loadStore();
-    res.json(store);
+    res.set('Cache-Control', 'no-store').json({ ...store, wishes: publicWishes(_req, store.wishes) });
   });
 
   app.post('/api/rsvp', (req, res) => {
@@ -132,7 +154,7 @@ async function startServer() {
   });
 
   app.get('/api/guestbook', (_req, res) => {
-    res.set('Cache-Control', 'no-store').json({ wishes: loadStore().wishes });
+    res.set('Cache-Control', 'no-store').json({ wishes: publicWishes(_req, loadStore().wishes) });
   });
 
   app.post('/api/guestbook', (req, res) => {
@@ -151,18 +173,42 @@ async function startServer() {
     }
 
     const store = loadStore();
-    const newWish: GuestbookWish = {
+    const token = commentOwner(req) || randomBytes(32).toString('hex');
+    const newWish: StoredGuestbookWish = {
       id: `wish-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
       name: name.trim(),
       relationship: typeof relationship === 'string' && relationship.trim() ? relationship.trim() : 'Honoured Guest',
       message: message.trim(),
       createdAt: new Date().toISOString(),
+      ownerHash: ownerHash(token),
     };
 
     store.wishes.unshift(newWish);
     saveStore(store);
 
-    res.status(201).json({ wish: newWish, wishes: store.wishes });
+    res.cookie('guestbook_owner', token, {
+      httpOnly: true, sameSite: 'strict', path: '/', maxAge: 365 * 24 * 60 * 60 * 1000,
+      secure: req.secure || req.get('x-forwarded-proto') === 'https',
+    });
+    const wishes = publicWishes(req, store.wishes, token);
+    res.status(201).json({ wish: wishes[0], wishes });
+  });
+
+  app.delete('/api/guestbook/:id', (req, res) => {
+    const store = loadStore();
+    const wish = store.wishes.find((entry) => entry.id === req.params.id);
+    if (!wish) {
+      res.status(404).json({ error: 'This comment no longer exists.' });
+      return;
+    }
+    const token = commentOwner(req);
+    if (!token || !wish.ownerHash || ownerHash(token) !== wish.ownerHash) {
+      res.status(403).json({ error: 'You can only delete comments posted from this browser.' });
+      return;
+    }
+    store.wishes = store.wishes.filter((entry) => entry.id !== wish.id);
+    saveStore(store);
+    res.set('Cache-Control', 'no-store').json({ wishes: publicWishes(req, store.wishes) });
   });
 
   app.put('/api/invitation-details', (req, res) => {

@@ -264,6 +264,9 @@ export const GuestbookSection: React.FC = () => {
   const [loadError, setLoadError] = useState(false);
   const [reload, setReload] = useState(0);
   const [posted, setPosted] = useState(false);
+  const [deleteTarget, setDeleteTarget] = useState<string | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -327,6 +330,25 @@ export const GuestbookSection: React.FC = () => {
       setError(error instanceof Error ? error.message : 'Could not save your comment. Please try again.');
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (deleting) return;
+    setDeleting(id);
+    setDeleteError(null);
+    try {
+      const response = await fetch(`/api/guestbook/${encodeURIComponent(id)}`, { method: 'DELETE' });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Could not delete your comment.');
+      // Only remove the comment after the server confirms deletion.
+      setWishes((current) => current.filter((wish) => wish.id !== id));
+      setDeleteTarget(null);
+      setPosted(false);
+    } catch (error) {
+      setDeleteError(error instanceof Error ? error.message : 'Could not delete your comment. Please try again.');
+    } finally {
+      setDeleting(null);
     }
   };
 
@@ -415,6 +437,7 @@ export const GuestbookSection: React.FC = () => {
       </form>
 
       {/* Submitted Wishes Scrollable Feed (ChungDoi Sổ Lưu Bút Box) */}
+      {deleteError && <p role="alert" className="max-w-md mx-auto mb-3 text-sm text-[#6E2618]">{deleteError}</p>}
       <div className="max-w-md mx-auto max-h-72 overflow-y-auto space-y-3 pr-1">
         {loading ? (
           <p role="status" className="text-center text-sm text-[#6E5D4F]">Loading comments...</p>
@@ -448,6 +471,21 @@ export const GuestbookSection: React.FC = () => {
               <p className="font-serif-editorial text-base text-[#4D3E32] leading-relaxed">
                 {wish.message}
               </p>
+              {wish.canDelete && (
+                <div className="mt-3 text-xs text-[#6E5D4F]">
+                  {deleteTarget === wish.id ? (
+                    <div className="flex flex-wrap items-center gap-3">
+                      <span>Delete your comment?</span>
+                      <button type="button" disabled={Boolean(deleting)} onClick={() => handleDelete(wish.id)} className="underline cursor-pointer text-[#6E2618] disabled:opacity-50">
+                        {deleting === wish.id ? 'Deleting...' : 'Confirm delete'}
+                      </button>
+                      <button type="button" disabled={Boolean(deleting)} onClick={() => { setDeleteTarget(null); setDeleteError(null); }} className="underline cursor-pointer disabled:opacity-50">Cancel</button>
+                    </div>
+                  ) : (
+                    <button type="button" disabled={Boolean(deleting)} onClick={() => { setDeleteTarget(wish.id); setDeleteError(null); }} className="underline cursor-pointer disabled:opacity-50">Delete my comment</button>
+                  )}
+                </div>
+              )}
             </div>
           ))
         )}
