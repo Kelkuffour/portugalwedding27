@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import {
   ArrowUp,
   Check,
-  ChevronDown,
   Copy,
   List,
   MapPin,
@@ -49,6 +48,37 @@ export default function App() {
   const [transitionTargetLabel, setTransitionTargetLabel] = useState<string>('');
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [navMenuOpen, setNavMenuOpen] = useState(false);
+
+  useEffect(() => {
+    if (!invitationOpened || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let frame = 0;
+    let cancelled = false;
+    const cancel = () => {
+      cancelled = true;
+      window.cancelAnimationFrame(frame);
+    };
+    const events = ['wheel', 'touchstart', 'pointerdown', 'keydown'] as const;
+    events.forEach((event) => window.addEventListener(event, cancel, { passive: true }));
+    const timer = window.setTimeout(() => {
+      if (cancelled || window.scrollY > 4) return;
+      const origin = window.scrollY;
+      const distance = Math.min(64, window.innerHeight * 0.08);
+      const start = performance.now();
+      const nudge = (now: number) => {
+        if (cancelled) return;
+        const progress = Math.min((now - start) / 1800, 1);
+        // Briefly reveal the content below, then settle back at the video.
+        window.scrollTo({ top: origin + distance * Math.sin(Math.PI * progress) ** 2, behavior: 'instant' });
+        if (progress < 1) frame = window.requestAnimationFrame(nudge);
+      };
+      frame = window.requestAnimationFrame(nudge);
+    }, 1400);
+    return () => {
+      window.clearTimeout(timer);
+      cancel();
+      events.forEach((event) => window.removeEventListener(event, cancel));
+    };
+  }, [invitationOpened]);
 
   const handleNavigateToSection = (targetId: string, label: string) => {
     setNavMenuOpen(false);
@@ -111,24 +141,7 @@ export default function App() {
           preload="auto"
           className="h-full w-full object-contain"
         />
-        {invitationOpened && (
-          <motion.a
-            href="#top"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            onClick={(event) => {
-              event.preventDefault();
-              document.getElementById('top')?.scrollIntoView({
-                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-              });
-            }}
-            className="absolute bottom-24 sm:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 rounded-full border border-[#D5CDBD]/60 bg-[#FAF8F4]/85 px-5 py-3 text-[#3B2F26] backdrop-blur-sm shadow-sm cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3B2F26]"
-          >
-            <span className="font-roman-caps text-[10px] tracking-[0.18em] whitespace-nowrap">Deslize para descobrir</span>
-            <ChevronDown aria-hidden="true" className="h-4 w-4 motion-safe:animate-bounce" />
-          </motion.a>
-        )}
+
       </section>
     <div
       id="top"
