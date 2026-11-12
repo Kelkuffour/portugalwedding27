@@ -204,23 +204,23 @@ export const CountdownAndCalendarSection: React.FC = () => {
         <EmbossedFloralDivider className="my-5" />
 
         {/* Add to Calendar Buttons */}
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-3 max-w-md mx-auto">
+        <div className="flex flex-col items-stretch gap-3 w-full max-w-md mx-auto">
           <a
             href={googleCalendarUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="embossed-button w-full sm:w-auto px-5 py-3 rounded-xs border border-[#C8BFA8] font-roman-caps text-[11px] tracking-[0.2em] text-[#3B2F26] inline-flex items-center justify-center gap-2 whitespace-nowrap"
+            className="embossed-button w-full min-w-0 px-3 py-3 rounded-xs border border-[#C8BFA8] font-roman-caps text-[11px] tracking-[0.2em] text-[#3B2F26] inline-flex items-center justify-center gap-2 text-center whitespace-normal"
           >
-            <Calendar className="w-3.5 h-3.5 text-[#3B2F26]" />
+            <Calendar className="w-3.5 h-3.5 shrink-0 text-[#3B2F26]" />
             <span>ADICIONAR AO GOOGLE CALENDAR</span>
           </a>
 
           <button
             type="button"
             onClick={handleDownloadIcs}
-            className="embossed-button w-full sm:w-auto px-5 py-3 rounded-xs border border-[#C8BFA8] font-roman-caps text-[11px] tracking-[0.2em] text-[#3B2F26] inline-flex items-center justify-center gap-2 cursor-pointer whitespace-nowrap"
+            className="embossed-button w-full min-w-0 px-3 py-3 rounded-xs border border-[#C8BFA8] font-roman-caps text-[11px] tracking-[0.2em] text-[#3B2F26] inline-flex items-center justify-center gap-2 cursor-pointer text-center whitespace-normal"
           >
-            <Download className="w-3.5 h-3.5 text-[#3B2F26]" />
+            <Download className="w-3.5 h-3.5 shrink-0 text-[#3B2F26]" />
             <span>BAIXAR CALENDÁRIO (.ICS)</span>
           </button>
         </div>
