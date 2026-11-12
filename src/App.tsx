@@ -17,7 +17,7 @@ import { CountdownAndCalendarSection } from './components/CountdownAndCalendarSe
 import { RsvpSection, GuestbookSection } from './components/RsvpAndGuestbookSections';
 import { GiftBoxSection } from './components/GiftBoxSection';
 import { VideoInvitationOpening } from './components/VideoInvitationOpening';
-import type { GuestbookWish, RsvpEntry } from '../server';
+import type { RsvpEntry } from '../server';
 
 const SCHEDULE_ITEMS = [
   {
@@ -48,7 +48,6 @@ export default function App() {
   const [transitioning, setTransitioning] = useState<boolean>(false);
   const [transitionTargetLabel, setTransitionTargetLabel] = useState<string>('');
   const [rsvps, setRsvps] = useState<RsvpEntry[]>([]);
-  const [wishes, setWishes] = useState<GuestbookWish[]>([]);
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [navMenuOpen, setNavMenuOpen] = useState(false);
 
@@ -58,7 +57,6 @@ export default function App() {
       .then((data) => {
         if (data) {
           if (Array.isArray(data.rsvps)) setRsvps(data.rsvps);
-          if (Array.isArray(data.wishes)) setWishes(data.wishes);
         }
       })
       .catch(() => {
@@ -577,10 +575,7 @@ export default function App() {
         {/* ==============================================================
             Section 12: Guestbook
            ============================================================== */}
-        <GuestbookSection
-          wishes={wishes}
-          onWishAdded={(wish) => setWishes((prev) => [wish, ...prev])}
-        />
+        <GuestbookSection />
 
         {/* ==============================================================
             Section 13: Gift Box

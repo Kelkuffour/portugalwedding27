@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { CheckCircle2, Send } from 'lucide-react';
 import { motion } from 'motion/react';
 import { EmbossedFloralDivider } from './EmbossedRoseCorner';
@@ -258,20 +258,37 @@ export const RsvpSection: React.FC<RsvpSectionProps> = ({ rsvps, onRsvpSubmitted
   );
 };
 
-interface GuestbookSectionProps {
-  wishes: GuestbookWish[];
-  onWishAdded: (wish: GuestbookWish) => void;
-}
-
-export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWishAdded }) => {
+export const GuestbookSection: React.FC = () => {
+  const [wishes, setWishes] = useState<GuestbookWish[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [loadError, setLoadError] = useState(false);
+  const [reload, setReload] = useState(0);
+  const [posted, setPosted] = useState(false);
   const [name, setName] = useState('');
   const [message, setMessage] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [submitting, setSubmitting] = useState(false);
 
+  useEffect(() => {
+    const controller = new AbortController();
+    setLoading(true);
+    setLoadError(false);
+    fetch('/api/guestbook', { signal: controller.signal, cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('Could not load comments');
+        const data = await response.json();
+        if (!Array.isArray(data.wishes)) throw new Error('Invalid comments response');
+        setWishes(data.wishes);
+      })
+      .catch(() => { if (!controller.signal.aborted) setLoadError(true); })
+      .finally(() => { if (!controller.signal.aborted) setLoading(false); });
+    return () => controller.abort();
+  }, [reload]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError(null);
+    setPosted(false);
 
     if (!name.trim()) {
       setError('Please enter your name.');
@@ -300,20 +317,14 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
       }
 
       const data = await res.json();
-      onWishAdded(data.wish);
+      if (!data.wish?.id || !Array.isArray(data.wishes)) throw new Error('Could not verify the saved comment.');
+      setWishes(data.wishes);
+      setLoadError(false);
+      setPosted(true);
       setName('');
       setMessage('');
-    } catch {
-      const fallbackWish: GuestbookWish = {
-        id: `local-wish-${Date.now()}`,
-        name: name.trim(),
-        relationship: 'Guest',
-        message: message.trim(),
-        createdAt: new Date().toISOString(),
-      };
-      onWishAdded(fallbackWish);
-      setName('');
-      setMessage('');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Could not save your comment. Please try again.');
     } finally {
       setSubmitting(false);
     }
@@ -343,6 +354,7 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
 
       {/* Guestbook Form */}
       <form onSubmit={handleSubmit} className="space-y-3.5 max-w-md mx-auto mb-8" noValidate>
+        {posted && <p role="status" className="text-center text-sm text-[#5C4B3E]">Your comment has been posted. Thank you!</p>}
         {error && (
           <div
             role="alert"
@@ -361,6 +373,8 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
           </label>
           <input
             id="wish-name"
+            maxLength={120}
+            disabled={submitting || loading}
             type="text"
             required
             value={name}
@@ -379,6 +393,8 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
           </label>
           <textarea
             id="wish-message"
+            maxLength={2000}
+            disabled={submitting || loading}
             rows={3}
             required
             value={message}
@@ -390,7 +406,7 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
 
         <button
           type="submit"
-          disabled={submitting}
+          disabled={submitting || loading}
           className="embossed-button w-full py-3 px-6 border border-[#C8BFA8] font-roman-caps text-xs tracking-[0.22em] text-[#3B2F26] inline-flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
         >
           <Send className="w-3.5 h-3.5 text-[#3B2F26]" />
@@ -400,7 +416,14 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
 
       {/* Submitted Wishes Scrollable Feed (ChungDoi Sổ Lưu Bút Box) */}
       <div className="max-w-md mx-auto max-h-72 overflow-y-auto space-y-3 pr-1">
-        {wishes.length === 0 ? (
+        {loading ? (
+          <p role="status" className="text-center text-sm text-[#6E5D4F]">Loading comments...</p>
+        ) : loadError ? (
+          <div role="alert" className="text-center text-sm text-[#6E5D4F]">
+            <p>Comments could not be loaded.</p>
+            <button type="button" onClick={() => setReload((value) => value + 1)} className="mt-2 underline cursor-pointer">Try again</button>
+          </div>
+        ) : wishes.length === 0 ? (
           <div className="p-6 border border-[#D8CFC0] bg-[#F7F5F0] text-center text-sm text-[#6E5D4F]">
             No wishes yet. Be the first to leave a blessing for Agostinho e Kety.
           </div>
@@ -415,7 +438,7 @@ export const GuestbookSection: React.FC<GuestbookSectionProps> = ({ wishes, onWi
                   {wish.name}
                 </span>
                 <span className="font-roman-caps text-[10px] tracking-[0.14em] text-[#6E5D4F] tabular-nums">
-                  {new Date(wish.createdAt).toLocaleDateString('en-US', {
+                  {new Date(wish.createdAt).toLocaleDateString('pt-PT', {
                     month: 'short',
                     day: 'numeric',
                     year: 'numeric',

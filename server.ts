@@ -7,7 +7,7 @@ import { createServer as createViteServer } from 'vite';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const DATA_DIR = path.join(__dirname, 'data');
+const DATA_DIR = process.env.INVITATION_DATA_DIR || path.join(__dirname, 'data');
 const DATA_FILE = path.join(DATA_DIR, 'invitation-store.json');
 
 export interface RsvpEntry {
@@ -62,40 +62,38 @@ const DEFAULT_STORE: StoreData = {
 };
 
 function loadStore(): StoreData {
-  try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    if (!fs.existsSync(DATA_FILE)) {
-      fs.writeFileSync(DATA_FILE, JSON.stringify(DEFAULT_STORE, null, 2), 'utf-8');
-      return structuredClone(DEFAULT_STORE);
-    }
-    const raw = fs.readFileSync(DATA_FILE, 'utf-8');
-    const parsed = JSON.parse(raw) as Partial<StoreData>;
-    return {
-      rsvps: Array.isArray(parsed.rsvps) ? parsed.rsvps : [],
-      wishes: Array.isArray(parsed.wishes) ? parsed.wishes : DEFAULT_STORE.wishes,
-      placeholders: { ...DEFAULT_STORE.placeholders, ...(parsed.placeholders || {}) },
-    };
-  } catch {
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
+  }
+  if (!fs.existsSync(DATA_FILE)) {
+    fs.writeFileSync(DATA_FILE, JSON.stringify(DEFAULT_STORE, null, 2), 'utf-8');
     return structuredClone(DEFAULT_STORE);
   }
+  const raw = fs.readFileSync(DATA_FILE, 'utf-8');
+  const parsed = JSON.parse(raw) as Partial<StoreData>;
+  const store: StoreData = {
+    rsvps: Array.isArray(parsed.rsvps) ? parsed.rsvps : [],
+    wishes: Array.isArray(parsed.wishes)
+      ? parsed.wishes.filter((wish) => !['wish-initial-1', 'wish-initial-2'].includes(wish.id))
+      : [],
+    placeholders: { ...DEFAULT_STORE.placeholders, ...(parsed.placeholders || {}) },
+  };
+  if (Array.isArray(parsed.wishes) && store.wishes.length !== parsed.wishes.length) saveStore(store);
+  return store;
 }
 
 function saveStore(data: StoreData): void {
-  try {
-    if (!fs.existsSync(DATA_DIR)) {
-      fs.mkdirSync(DATA_DIR, { recursive: true });
-    }
-    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (err) {
-    console.error('Failed to persist store:', err);
+  if (!fs.existsSync(DATA_DIR)) {
+    fs.mkdirSync(DATA_DIR, { recursive: true });
   }
+  const temporaryFile = `${DATA_FILE}.tmp`;
+  fs.writeFileSync(temporaryFile, JSON.stringify(data, null, 2), 'utf-8');
+  fs.renameSync(temporaryFile, DATA_FILE);
 }
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
   app.use(express.json({ limit: '5mb' }));
 
@@ -133,6 +131,10 @@ async function startServer() {
     res.status(201).json({ rsvp: newEntry, rsvps: store.rsvps });
   });
 
+  app.get('/api/guestbook', (_req, res) => {
+    res.set('Cache-Control', 'no-store').json({ wishes: loadStore().wishes });
+  });
+
   app.post('/api/guestbook', (req, res) => {
     const { name, relationship, message } = req.body || {};
     if (!name || typeof name !== 'string' || !name.trim()) {
@@ -141,6 +143,10 @@ async function startServer() {
     }
     if (!message || typeof message !== 'string' || !message.trim()) {
       res.status(400).json({ error: 'Please write a congratulatory message.' });
+      return;
+    }
+    if (name.trim().length > 120 || message.trim().length > 2000) {
+      res.status(400).json({ error: 'Use up to 120 characters for your name and 2000 for your message.' });
       return;
     }
 
@@ -168,6 +174,11 @@ async function startServer() {
     };
     saveStore(store);
     res.json({ placeholders: store.placeholders });
+  });
+
+  app.use((error: Error, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
+    console.error('Invitation storage error:', error.message);
+    res.status(500).json({ error: 'Comments could not be loaded or saved. Please try again.' });
   });
 
   if (process.env.NODE_ENV !== 'production') {
