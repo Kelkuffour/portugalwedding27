@@ -2,6 +2,7 @@ import React, { useRef, useState } from 'react';
 import {
   ArrowUp,
   Check,
+  ChevronDown,
   Copy,
   List,
   MapPin,
@@ -110,6 +111,24 @@ export default function App() {
           preload="auto"
           className="h-full w-full object-contain"
         />
+        {invitationOpened && (
+          <motion.a
+            href="#top"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            onClick={(event) => {
+              event.preventDefault();
+              document.getElementById('top')?.scrollIntoView({
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+              });
+            }}
+            className="absolute bottom-24 sm:bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 rounded-full border border-[#D5CDBD]/60 bg-[#FAF8F4]/85 px-5 py-3 text-[#3B2F26] backdrop-blur-sm shadow-sm cursor-pointer focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#3B2F26]"
+          >
+            <span className="font-roman-caps text-[10px] tracking-[0.18em] whitespace-nowrap">Deslize para descobrir</span>
+            <ChevronDown aria-hidden="true" className="h-4 w-4 motion-safe:animate-bounce" />
+          </motion.a>
+        )}
       </section>
     <div
       id="top"
