@@ -1,0 +1,6 @@
+{
+  "name": "Elisabeth Anderson — Interactive Digital Invitation",
+  "description": "An interactive letterpress and blind-embossed digital invitation honouring Elisabeth Anderson on July 16, 2026 at Love Gardens Villa, Miami.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

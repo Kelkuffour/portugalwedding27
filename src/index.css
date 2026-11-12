@@ -1,0 +1,241 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --linen-bg: #DAD3C5;
+    --linen-bg-deep: #CFC7B7;
+    --paper-card: #EFECE6;
+    --paper-card-bright: #F6F4EF;
+    --paper-border: #DFD9CE;
+    --ink-primary: #3B2F26;
+    --ink-secondary: #5C4B3E;
+    --ink-muted: #7D6B5D;
+    --rule-bronze: #8A7666;
+    --emboss-highlight: #FFFFFF;
+    --emboss-shadow: rgba(94, 78, 63, 0.24);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    background-color: var(--linen-bg);
+    color: var(--ink-primary);
+    font-family: 'Cormorant Garamond', Georgia, serif;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html {
+      scroll-behavior: auto;
+    }
+    *, *::before, *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+}
+
+.font-script {
+  font-family: 'Pinyon Script', cursive;
+}
+
+.font-serif-editorial {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-roman-caps {
+  font-family: 'Cinzel', 'Cormorant Garamond', Georgia, serif;
+}
+
+.font-ui {
+  font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+/* Woven Oatmeal Linen Backdrop matching the uploaded photograph */
+.linen-backdrop {
+  background-color: #DAD3C5;
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(255, 255, 255, 0.14) 0px,
+      rgba(255, 255, 255, 0.14) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(90, 75, 60, 0.045) 0px,
+      rgba(90, 75, 60, 0.045) 1px,
+      transparent 1px,
+      transparent 3px
+    ),
+    radial-gradient(circle at 20% 15%, rgba(255, 255, 255, 0.32), transparent 55%),
+    radial-gradient(circle at 85% 80%, rgba(88, 72, 56, 0.12), transparent 60%);
+}
+
+/* Heavyweight Cotton Letterpress Cardstock */
+.cotton-cardstock {
+  background-color: #EFECE6;
+  background-image:
+    radial-gradient(at 15% 15%, rgba(255, 255, 255, 0.65) 0%, transparent 60%),
+    radial-gradient(at 85% 85%, rgba(198, 188, 173, 0.25) 0%, transparent 60%);
+  box-shadow:
+    0 24px 48px -12px rgba(59, 47, 38, 0.18),
+    0 6px 16px -4px rgba(59, 47, 38, 0.1),
+    inset 0 1px 0 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 0 rgba(168, 156, 140, 0.3);
+}
+
+/* Couple Watermark Background Layer */
+.couple-bg-layer {
+  background-image: url('/assets/aistudio/These_Are_the_Wedding_Trends_to_Follow_and_Avoid_8b245327.jpg');
+  background-size: cover;
+  background-position: center 22%;
+  background-repeat: no-repeat;
+  opacity: 0.13;
+  mix-blend-mode: multiply;
+  filter: sepia(0.2) contrast(1.05);
+}
+
+/* Card Subtle Watermark Layer */
+.card-couple-watermark {
+  background-image: url('/assets/aistudio/These_Are_the_Wedding_Trends_to_Follow_and_Avoid_8b245327.jpg');
+  background-size: cover;
+  background-position: center 20%;
+  background-repeat: no-repeat;
+  opacity: 0.085;
+  mix-blend-mode: multiply;
+  filter: sepia(0.25) contrast(1.05);
+}
+
+/* Subtle Letterpress Ink Deboss */
+.letterpress-text {
+  text-shadow: 0px 1px 0px rgba(255, 255, 255, 0.75);
+}
+
+/* Blind Embossed Paper Relief Effect for Corner Roses */
+.blind-emboss-svg {
+  filter:
+    drop-shadow(-1.5px -1.5px 1.2px rgba(255, 255, 255, 0.95))
+    drop-shadow(2px 2.5px 2.5px rgba(92, 77, 62, 0.24))
+    drop-shadow(0.5px 1px 0.5px rgba(92, 77, 62, 0.16));
+}
+
+/* Organic Living Floral Animations */
+@keyframes floralBreathe {
+  0%, 100% {
+    transform: scale(1) rotate(0deg);
+  }
+  50% {
+    transform: scale(1.032) rotate(0.8deg);
+  }
+}
+
+@keyframes rosePetalGlow {
+  0%, 100% {
+    filter: drop-shadow(-1.5px -1.5px 1.2px rgba(255, 255, 255, 0.95))
+            drop-shadow(2px 2.5px 2.5px rgba(92, 77, 62, 0.24))
+            drop-shadow(0.5px 1px 0.5px rgba(92, 77, 62, 0.16));
+  }
+  50% {
+    filter: drop-shadow(-2px -2.5px 2px rgba(255, 255, 255, 1))
+            drop-shadow(2.8px 3.2px 3.5px rgba(92, 77, 62, 0.32))
+            drop-shadow(0.8px 1.2px 1px rgba(92, 77, 62, 0.22));
+  }
+}
+
+@keyframes leafSwayHorizontal {
+  0%, 100% {
+    transform: rotate(0deg) skewX(0deg);
+  }
+  50% {
+    transform: rotate(1.4deg) skewX(0.8deg);
+  }
+}
+
+@keyframes leafSwayVertical {
+  0%, 100% {
+    transform: rotate(0deg) skewY(0deg);
+  }
+  50% {
+    transform: rotate(-1.2deg) skewY(-0.8deg);
+  }
+}
+
+@keyframes roseCenterPulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+.animate-floral-breathe {
+  animation: floralBreathe 7s ease-in-out infinite;
+  transform-origin: 20% 20%;
+}
+
+.animate-rose-glow {
+  animation: rosePetalGlow 6s ease-in-out infinite;
+}
+
+.animate-leaf-h {
+  animation: leafSwayHorizontal 5.5s ease-in-out infinite;
+  transform-origin: 30px 20px;
+}
+
+.animate-leaf-v {
+  animation: leafSwayVertical 6.2s ease-in-out infinite;
+  transform-origin: 20px 30px;
+}
+
+.animate-rose-center {
+  animation: roseCenterPulse 4.8s ease-in-out infinite;
+  transform-origin: 52px 52px;
+}
+
+/* Falling Flowers & Petals Drift Animation */
+@keyframes fallingPetal {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -20px, 0) rotate(var(--rot-start, 0deg)) scale(0.8);
+  }
+  15% {
+    opacity: 0.95;
+  }
+  80% {
+    opacity: 0.85;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--sway-x, 30px), 108vh, 0) rotate(var(--rot-end, 180deg)) scale(1.05);
+  }
+}
+
+.animate-falling-petal {
+  animation-name: fallingPetal;
+  animation-timing-function: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation-fill-mode: forwards;
+}
+
+/* Embossed Paper Button */
+.embossed-button {
+  background: linear-gradient(145deg, #F6F4EF, #E8E3DA);
+  box-shadow:
+    3px 4px 10px rgba(92, 77, 62, 0.16),
+    -2px -2px 6px rgba(255, 255, 255, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.embossed-button:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    4px 6px 14px rgba(92, 77, 62, 0.22),
+    -2px -2px 8px rgba(255, 255, 255, 0.95),
+    inset 0 1px 0 rgba(255, 255, 255, 1);
+}
+
+.embossed-button:active {
+  transform: translateY(0px);
+}
