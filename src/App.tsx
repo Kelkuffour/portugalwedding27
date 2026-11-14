@@ -135,7 +135,15 @@ export default function App() {
         <video
           src="/assets/landing-opening.mp4"
           ref={landingVideoRef}
-          loop
+          onEnded={(event) => {
+            const videoSection = event.currentTarget.closest('section');
+            if (videoSection && videoSection.getBoundingClientRect().bottom > 0) {
+              document.getElementById('top')?.scrollIntoView({
+                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
+                block: 'start',
+              });
+            }
+          }}
           muted
           playsInline
           preload="auto"
