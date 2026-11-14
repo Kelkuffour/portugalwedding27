@@ -83,37 +83,6 @@ export default function App() {
     frame = window.requestAnimationFrame(advance);
   };
 
-  useEffect(() => {
-    if (!invitationOpened || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    let frame = 0;
-    let cancelled = false;
-    const cancel = () => {
-      cancelled = true;
-      window.cancelAnimationFrame(frame);
-    };
-    const events = ['wheel', 'touchstart', 'pointerdown', 'keydown'] as const;
-    events.forEach((event) => window.addEventListener(event, cancel, { passive: true }));
-    const timer = window.setTimeout(() => {
-      if (cancelled || window.scrollY > 4) return;
-      const origin = window.scrollY;
-      const distance = Math.min(64, window.innerHeight * 0.08);
-      const start = performance.now();
-      const nudge = (now: number) => {
-        if (cancelled) return;
-        const progress = Math.min((now - start) / 1800, 1);
-        // Briefly reveal the content below, then settle back at the video.
-        window.scrollTo({ top: origin + distance * Math.sin(Math.PI * progress) ** 2, behavior: 'instant' });
-        if (progress < 1) frame = window.requestAnimationFrame(nudge);
-      };
-      frame = window.requestAnimationFrame(nudge);
-    }, 1400);
-    return () => {
-      window.clearTimeout(timer);
-      cancel();
-      events.forEach((event) => window.removeEventListener(event, cancel));
-    };
-  }, [invitationOpened]);
-
   const handleNavigateToSection = (targetId: string, label: string) => {
     setNavMenuOpen(false);
     setTransitionTargetLabel(label);
