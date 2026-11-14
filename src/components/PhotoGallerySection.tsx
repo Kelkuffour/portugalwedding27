@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { ChevronLeft, ChevronRight, X } from 'lucide-react';
-import { motion } from 'motion/react';
+import { X } from 'lucide-react';
+import { motion, useInView, useReducedMotion } from 'motion/react';
 import { EmbossedFloralDivider } from './EmbossedRoseCorner';
 
 export interface GalleryItem {
@@ -43,6 +43,11 @@ export const PhotoGallerySection: React.FC = () => {
   const [activeIndex, setActiveIndex] = useState<number>(0);
   const [lightboxOpen, setLightboxOpen] = useState<boolean>(false);
   const touchStartX = useRef<number | null>(null);
+  const galleryRef = useRef<HTMLElement>(null);
+  const visible = useInView(galleryRef, { amount: 0.25 });
+  const reduceMotion = useReducedMotion();
+  const [paused, setPaused] = useState(false);
+  const [tabVisible, setTabVisible] = useState(!document.hidden);
 
   const total = GALLERY_PLATES.length;
 
@@ -53,6 +58,18 @@ export const PhotoGallerySection: React.FC = () => {
   const handleNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % total);
   }, [total]);
+
+  useEffect(() => {
+    const updateVisibility = () => setTabVisible(!document.hidden);
+    document.addEventListener('visibilitychange', updateVisibility);
+    return () => document.removeEventListener('visibilitychange', updateVisibility);
+  }, []);
+
+  useEffect(() => {
+    if (!visible || !tabVisible || lightboxOpen || paused || reduceMotion) return;
+    const timer = window.setTimeout(handleNext, 4500);
+    return () => window.clearTimeout(timer);
+  }, [activeIndex, visible, tabVisible, lightboxOpen, paused, reduceMotion, handleNext]);
 
   useEffect(() => {
     if (!lightboxOpen) return;
@@ -135,6 +152,7 @@ export const PhotoGallerySection: React.FC = () => {
   return (
     <motion.section
       id="gallery"
+      ref={galleryRef}
       initial={{ opacity: 0, y: 24 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.15 }}
@@ -160,27 +178,9 @@ export const PhotoGallerySection: React.FC = () => {
         style={{ perspective: '1000px' }}
         onTouchStart={handleTouchStart}
         onTouchEnd={handleTouchEnd}
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
       >
-        {/* Absolute Left Navigation Arrow */}
-        <button
-          type="button"
-          onClick={handlePrev}
-          aria-label="Previous photo"
-          className="absolute left-2 sm:left-4 z-40 w-11 h-11 rounded-full bg-[#FAF8F4]/90 hover:bg-[#FAF8F4] border border-[#D5CDBD] shadow-lg flex items-center justify-center text-[#3B2F26] transition-all hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#3B2F26]"
-        >
-          <ChevronLeft className="w-5 h-5" />
-        </button>
-
-        {/* Absolute Right Navigation Arrow */}
-        <button
-          type="button"
-          onClick={handleNext}
-          aria-label="Next photo"
-          className="absolute right-2 sm:right-4 z-40 w-11 h-11 rounded-full bg-[#FAF8F4]/90 hover:bg-[#FAF8F4] border border-[#D5CDBD] shadow-lg flex items-center justify-center text-[#3B2F26] transition-all hover:scale-105 active:scale-95 cursor-pointer focus-visible:outline-2 focus-visible:outline-[#3B2F26]"
-        >
-          <ChevronRight className="w-5 h-5" />
-        </button>
-
         {/* 3D Stack of Cards */}
         {GALLERY_PLATES.map((item, index) => {
           const isCenter = index === activeIndex;
@@ -264,14 +264,6 @@ export const PhotoGallerySection: React.FC = () => {
 
           {/* Center Image & Left/Right Controls */}
           <div className="relative flex-1 flex items-center justify-center my-4 max-w-3xl w-full mx-auto overflow-hidden">
-            <button
-              type="button"
-              onClick={handlePrev}
-              aria-label="Previous photo"
-              className="absolute left-2 z-20 w-10 h-10 rounded-full bg-[#2A2019]/80 border border-[#FAF8F4]/25 flex items-center justify-center text-[#FAF8F4] hover:bg-[#3B2F26] cursor-pointer"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
 
             <div className="flex flex-col items-center justify-center max-h-[70vh] w-full">
               <div className="relative overflow-hidden border border-[#FAF8F4]/20 max-h-[60vh] aspect-[3/4] bg-[#241B15] rounded-xl shadow-2xl">
@@ -288,14 +280,6 @@ export const PhotoGallerySection: React.FC = () => {
               </p>
             </div>
 
-            <button
-              type="button"
-              onClick={handleNext}
-              aria-label="Next photo"
-              className="absolute right-2 z-20 w-10 h-10 rounded-full bg-[#2A2019]/80 border border-[#FAF8F4]/25 flex items-center justify-center text-[#FAF8F4] hover:bg-[#3B2F26] cursor-pointer"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
           </div>
 
           {/* Thumbnail Strip */}
