@@ -3,6 +3,7 @@
 .preview-tools
 .npm-cache
 node_modules
+dist
 data
 tests
 .env*
