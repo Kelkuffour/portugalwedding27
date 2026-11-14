@@ -1,6 +1,7 @@
 node_modules/
 .preview-tools/
 .npm-cache/
+.vercel/
 data/
 build/
 dist/

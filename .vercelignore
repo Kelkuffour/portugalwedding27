@@ -1,0 +1,8 @@
+.git
+.vercel
+.preview-tools
+.npm-cache
+node_modules
+data
+tests
+.env*

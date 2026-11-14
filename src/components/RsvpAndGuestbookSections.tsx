@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Send } from 'lucide-react';
 import { motion } from 'motion/react';
 import { EmbossedFloralDivider } from './EmbossedRoseCorner';
-import type { GuestbookWish } from '../../server';
+import type { GuestbookWish } from '../../backend/guestbook-types';
 import { createRsvpWhatsAppUrl } from '../lib/rsvp';
 
 export const RsvpSection: React.FC = () => {
@@ -246,8 +246,8 @@ export const GuestbookSection: React.FC = () => {
       }
 
       const data = await res.json();
-      if (!data.wish?.id || !Array.isArray(data.wishes)) throw new Error('Could not verify the saved comment.');
-      setWishes(data.wishes);
+      if (!data.wish?.id) throw new Error('Could not verify the saved comment.');
+      setWishes((current) => [data.wish, ...current.filter((wish) => wish.id !== data.wish.id)]);
       setLoadError(false);
       setPosted(true);
       setName('');
