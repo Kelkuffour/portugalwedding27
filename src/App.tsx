@@ -43,11 +43,45 @@ const QUICK_NAV_SECTIONS = [
 export default function App() {
   const musicRef = useRef<AmbientMusicHandle>(null);
   const landingVideoRef = useRef<HTMLVideoElement>(null);
+  const stopVideoScroll = useRef<(() => void) | null>(null);
   const [invitationOpened, setInvitationOpened] = useState(false);
   const [transitioning, setTransitioning] = useState<boolean>(false);
   const [transitionTargetLabel, setTransitionTargetLabel] = useState<string>('');
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [navMenuOpen, setNavMenuOpen] = useState(false);
+
+  useEffect(() => () => stopVideoScroll.current?.(), []);
+
+  const scrollAfterVideo = () => {
+    const section = landingVideoRef.current?.closest('section');
+    const invitation = document.getElementById('top');
+    if (!section || !invitation || section.getBoundingClientRect().bottom <= 0) return;
+    stopVideoScroll.current?.();
+    const origin = window.scrollY;
+    const destination = origin + invitation.getBoundingClientRect().top;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      window.scrollTo({ top: destination, behavior: 'instant' });
+      return;
+    }
+    let frame = 0;
+    const events = ['wheel', 'touchstart', 'pointerdown', 'keydown'] as const;
+    const stop = () => {
+      window.cancelAnimationFrame(frame);
+      events.forEach((event) => window.removeEventListener(event, stop));
+      stopVideoScroll.current = null;
+    };
+    stopVideoScroll.current = stop;
+    events.forEach((event) => window.addEventListener(event, stop, { passive: true }));
+    const started = performance.now();
+    const advance = (now: number) => {
+      const progress = Math.min((now - started) / 3200, 1);
+      const eased = (1 - Math.cos(Math.PI * progress)) / 2;
+      window.scrollTo({ top: origin + (destination - origin) * eased, behavior: 'instant' });
+      if (progress < 1) frame = window.requestAnimationFrame(advance);
+      else stop();
+    };
+    frame = window.requestAnimationFrame(advance);
+  };
 
   useEffect(() => {
     if (!invitationOpened || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
@@ -135,15 +169,7 @@ export default function App() {
         <video
           src="/assets/landing-opening.mp4"
           ref={landingVideoRef}
-          onEnded={(event) => {
-            const videoSection = event.currentTarget.closest('section');
-            if (videoSection && videoSection.getBoundingClientRect().bottom > 0) {
-              document.getElementById('top')?.scrollIntoView({
-                behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth',
-                block: 'start',
-              });
-            }
-          }}
+          onEnded={scrollAfterVideo}
           muted
           playsInline
           preload="auto"
