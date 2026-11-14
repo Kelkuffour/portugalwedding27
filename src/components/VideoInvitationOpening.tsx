@@ -72,7 +72,7 @@ export function VideoInvitationOpening({ onComplete, onStart, onReveal }: Openin
       <video
         ref={videoRef}
         src="/assets/envelope-opening.mp4"
-        poster="/assets/envelope-opening-poster.jpg"
+        poster="/assets/envelope-ak-poster.jpg"
         muted
         playsInline
         preload="auto"
